@@ -1,5 +1,7 @@
 package mpr.proj.cli;
 
+import mpr.proj.database.*;
+
 public class DbManageMenu extends Menu{
 	
 	public DbManageMenu(){
@@ -18,12 +20,12 @@ public class DbManageMenu extends Menu{
 	
 	protected void selected(int sel){
 		switch(sel){
-			//case 1: new AddRecord();
-			//		break;
+			case 1: new AddRecord();
+					break;
 			//case 3: new UpdateRecord();
 			//		break;
-			//case 3: new DeleteRecord();
-			//		break;
+			case 3: new DeleteRecord();
+					break;
 			case 4: new MainMenu();
 					break;
 		}
