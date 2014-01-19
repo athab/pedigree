@@ -28,7 +28,6 @@ public class Horse {
         this.dam = dam;
         this.breeder = breeder;
     }
-    
     public long getID() {
     	return id;
     }

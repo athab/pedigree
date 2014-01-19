@@ -14,6 +14,8 @@ public class MainMenu extends Menu {
 	}
 	protected void selected(int sel){
 		switch(sel){
+			case 1: new PedigreeMenu();
+					break;
 			case 2: new FoalsMenu();
 					break;
 			case 4: new DbManageMenu();
