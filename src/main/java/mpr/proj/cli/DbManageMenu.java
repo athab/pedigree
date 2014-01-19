@@ -22,8 +22,8 @@ public class DbManageMenu extends Menu{
 		switch(sel){
 			case 1: new AddRecord();
 					break;
-			//case 3: new UpdateRecord();
-			//		break;
+			case 2: new UpdateRecord();
+					break;
 			case 3: new DeleteRecord();
 					break;
 			case 4: new MainMenu();

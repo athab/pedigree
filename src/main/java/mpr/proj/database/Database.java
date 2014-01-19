@@ -34,7 +34,6 @@ public class Database{
 		System.out.println("2. Breeder");
 		System.out.println("3. Color");
 		System.out.println("4. Country");
-		System.out.println("5. Sex");
 	}
 }
 

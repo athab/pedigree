@@ -8,7 +8,7 @@ public class DeleteRecord extends Database{
 	public DeleteRecord(){
 		System.out.println("-- Delete record --");
 		showEntities();
-		System.out.println("6. <- Back");
+		System.out.println("5. <- Back");
 		selected(getOption());
 	}
 	
@@ -22,9 +22,7 @@ public class DeleteRecord extends Database{
 					break;
 			case 4: deleteCountry();
 					break;
-			case 5: deleteSex();
-					break;
-			case 6: new DbManageMenu();
+			case 5: new DbManageMenu();
 					break;
 		}
 	}
@@ -47,6 +45,7 @@ public class DeleteRecord extends Database{
 			e.printStackTrace();
 		}
 		System.out.println("]");
+		System.out.print("Choose ID: ");
 		select = EasyIn.getInt();
 		String query = "update horse set dam=null where dam = ?";
 		try {
@@ -93,6 +92,7 @@ public class DeleteRecord extends Database{
 			e.printStackTrace();
 		}
 		System.out.println("]");
+		System.out.print("Choose ID: ");
 		select = EasyIn.getInt();
 		String query = "update horse set breeder=null where breeder = ?";
 		try {
@@ -131,6 +131,7 @@ public class DeleteRecord extends Database{
 			e.printStackTrace();
 		}
 		System.out.println("]");
+		System.out.print("Choose ID: ");
 		select = EasyIn.getInt();
 		String query = "delete from color where id = ?";
 		try {
@@ -164,6 +165,7 @@ public class DeleteRecord extends Database{
 			e.printStackTrace();
 		}
 		System.out.println("]");
+		System.out.print("Choose ID: ");
 		select = EasyIn.getInt();
 		String query = "update breeder set country=null where country = ?";
 		try {
@@ -182,38 +184,6 @@ public class DeleteRecord extends Database{
 			new DeleteRecord();
 		}catch(SQLException e){
 			e.printStackTrace();
-		}
-	}
-	private void deleteSex(){
-		int select;
-		ResultSet rs = getSet("select id, name from sex");
-		System.out.println(" -- Delete sex -- ");
-		System.out.print("[ ");
-		int i = 1;
-		try{
-			while(rs.next()){
-				if(i % 15 == 0)
-					System.out.println(rs.getInt("id") + ":" + rs.getString("name") + "; ");
-				else
-					System.out.print(rs.getInt("id") + ":" + rs.getString("name") + "; ");
-				i++;
-			}
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-		System.out.println("]");
-		select = EasyIn.getInt();
-		String query = "delete from sex where id = ?";
-		try {
-			PreparedStatement st = con.prepareStatement(query);
-			st.setInt(1, select);
-			st.executeUpdate();
-			EasyIn.pause("Sex deleted");
-			new DeleteRecord();
-		}catch(SQLException e){
-			System.out.println("Operation refused");
-			System.out.println("Horses exist with selected sex");
-			new DeleteRecord();
 		}
 	}
 }

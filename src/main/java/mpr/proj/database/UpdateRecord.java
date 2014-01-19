@@ -1,13 +1,15 @@
 package mpr.proj.database;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import mpr.proj.EasyIn;
 import mpr.proj.cli.DbManageMenu;
 
-public class AddRecord extends Database{
-	public AddRecord(){
-		System.out.println("-- Add record --");
+public class UpdateRecord extends Database{
+	public UpdateRecord(){
+		System.out.println("-- Update record --");
 		showEntities();
 		System.out.println("5. <- Back");
 		selected(getOption());
@@ -15,25 +17,42 @@ public class AddRecord extends Database{
 	
 	private void selected(int sel){
 		switch(sel){
-			case 1: addHorse();
+			case 1: updateHorse();
 					break;
-			case 2: addBreeder();
+			case 2: updateBreeder();
 					break;
-			case 3: addColor();
+			case 3: updateColor();
 					break;
-			case 4: addCountry();
+			case 4: updateCountry();
 					break;
 			case 5: new DbManageMenu();
 					break;
 		}
 	}
-	
-	private void addHorse(){
-		ResultSet rs;
+	protected void updateHorse(){
+		int select, sex, color, sire, dam, breeder;
 		String name, date;
-		int sex, sire, dam, breeder, color;
-		Boolean yearOnly;
-		System.out.println(" -- Add horse -- ");
+		boolean yearOnly;
+		
+		ResultSet rs = getSet("select * from horse order by id asc");
+		System.out.println(" -- Update horse -- ");
+		int i = 1;
+		try{
+			System.out.println("ID \t Name \t Sex \t Color \t Date of birth \t Year only \t Dam \t Sire \t Breeder");
+			while(rs.next()){
+					System.out.print(rs.getInt("id") + ".\t" + rs.getString("name") + "\t" + rs.getString("sex") + "\t" + rs.getString("color") + "\t" );
+					if(rs.getBoolean("yearonly"))
+						System.out.print(rs.getDate("dob").toString().substring(0, 4) + "      \t");
+					else
+						System.out.print(rs.getDate("dob") + "\t");
+					System.out.println(rs.getBoolean("yearonly") + "\t\t" + rs.getInt("dam") + "\t" + rs.getInt("sire") + "\t" + rs.getInt("breeder"));
+					
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		System.out.print("Choose ID: ");
+		select = EasyIn.getInt();
 		System.out.print("Name: ");
 		name = EasyIn.getString();
 		System.out.println("Sex: ");
@@ -63,14 +82,14 @@ public class AddRecord extends Database{
 		System.out.println("Sire: ");
 		System.out.print("[ ");
 		rs = getSet("select id, name from horse where sex = 1");
-		int i = 1;
+		int h = 1;
 		try{
 			while(rs.next()){
-				if(i % 15 == 0)
+				if(h % 15 == 0)
 					System.out.println(rs.getInt("id") + ":" + rs.getString("name") + "; ");
 				else
 					System.out.print(rs.getInt("id") + ":" + rs.getString("name") + "; ");
-				i++;
+				h++;
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -106,7 +125,7 @@ public class AddRecord extends Database{
 		}
 		System.out.println("]");
 		breeder = EasyIn.getInt();
-		String query = "insert into horse (name, sex, color, dob, yearonly, dam, sire, breeder) values (?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "update horse set name=?, sex=?, color=?, dob=?, yearonly=?, dam=?, sire=?, breeder=? where id = " + select;
 		try {
 			PreparedStatement st = con.prepareStatement(query);
 			st.setString(1, name);
@@ -118,87 +137,121 @@ public class AddRecord extends Database{
 			st.setInt(7, sire);
 			st.setInt(8, breeder);
 			st.executeUpdate();
-			EasyIn.pause("Horse added");
-			new AddRecord();
+			EasyIn.pause("Horse updated");
+			new UpdateRecord();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 	}
-	private void addBreeder(){
-		ResultSet rs;
+	protected void updateBreeder(){
+		int select, country;
 		String name;
-		int country;
-		System.out.println(" -- Add breeder -- ");
+		ResultSet rs = getSet("select * from breeder order by id asc");
+		System.out.println(" -- Update breeder -- ");
+		int i = 1;
+		try{
+			System.out.println("ID \t Name \t Country");
+			while(rs.next()){
+					System.out.println(rs.getInt("id") + ".\t" + rs.getString("name") + "\t" + rs.getString("country"));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		System.out.print("Choose ID: ");
+		select = EasyIn.getInt();
 		System.out.print("Name: ");
 		name = EasyIn.getString();
-		System.out.print("Country: ");
-		System.out.print("[ ");
 		rs = getSet("select id, code from country");
+		System.out.print("[ ");
+		int h = 1;
 		try{
-			int i = 1;
 			while(rs.next()){
-				if(i % 15 == 0)
+				if(h % 15 == 0)
 					System.out.println(rs.getInt("id") + ":" + rs.getString("code") + "; ");
 				else
 					System.out.print(rs.getInt("id") + ":" + rs.getString("code") + "; ");
-				i++;
+				h++;
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		System.out.println("]");
+		System.out.print("Country ID: ");
 		country = EasyIn.getInt();
-		String query = "insert into breeder (name, country) values (?, ?)";
+		String query = "update breeder set name=?, country=? where id=" + select;
 		try {
 			PreparedStatement st = con.prepareStatement(query);
 			st.setString(1, name);
 			st.setInt(2, country);
 			st.executeUpdate();
-			EasyIn.pause("Breeder added");
-			new AddRecord();
+			EasyIn.pause("Breeder updated");
+			new UpdateRecord();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 	}
-	private void addColor(){
+	protected void updateColor(){
+		int select;
 		String lname, sname;
-		System.out.println(" -- Add color -- ");
+		ResultSet rs = getSet("select * from color order by id asc");
+		System.out.println(" -- Update color -- ");
+		int i = 1;
+		try{
+			System.out.println("ID \t Short name \t Long name");
+			while(rs.next()){
+					System.out.println(rs.getInt("id") + ".\t" + rs.getString("sname") + "\t\t" + rs.getString("lname"));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		System.out.print("Choose ID: ");
+		select = EasyIn.getInt();
 		System.out.print("Long name: ");
 		lname = EasyIn.getString();
 		System.out.print("Short name: ");
 		sname = EasyIn.getString();
-		
-		String query = "insert into color (lname, sname) values (?, ?)";
+		String query = "update color set lname=?, sname=? where id=" + select;
 		try {
 			PreparedStatement st = con.prepareStatement(query);
 			st.setString(1, lname);
 			st.setString(2, sname);
 			st.executeUpdate();
-			EasyIn.pause("Color added");
-			new AddRecord();
+			EasyIn.pause("Color updated");
+			new UpdateRecord();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 	}
-	private void addCountry(){
+	protected void updateCountry(){
+		int select;
 		String name, code;
-		System.out.println(" -- Add country -- ");
-		System.out.print("Name: ");
-		name = EasyIn.getString();
+		ResultSet rs = getSet("select * from country order by id asc");
+		System.out.println(" -- Update country -- ");
+		int i = 1;
+		try{
+			System.out.println("ID \t Code \t\t Name");
+			while(rs.next()){
+					System.out.println(rs.getInt("id") + ".\t" + rs.getString("code") + "\t\t" + rs.getString("name"));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		System.out.print("Choose ID: ");
+		select = EasyIn.getInt();
 		System.out.print("Code: ");
 		code = EasyIn.getString();
-		
-		String query = "insert into country (name, code) values (?, ?)";
+		System.out.print("Name: ");
+		name = EasyIn.getString();
+		String query = "update country set code=?, name=? where id=" + select;
 		try {
 			PreparedStatement st = con.prepareStatement(query);
-			st.setString(1, name);
-			st.setString(2, code);
+			st.setString(1, code);
+			st.setString(2, name);
 			st.executeUpdate();
-			EasyIn.pause("Country added");
-			new AddRecord();
+			EasyIn.pause("Country updated");
+			new UpdateRecord();
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 	}
 }
-
