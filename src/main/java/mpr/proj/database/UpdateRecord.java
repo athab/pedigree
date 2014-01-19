@@ -148,7 +148,6 @@ public class UpdateRecord extends Database{
 		String name;
 		ResultSet rs = getSet("select * from breeder order by id asc");
 		System.out.println(" -- Update breeder -- ");
-		int i = 1;
 		try{
 			System.out.println("ID \t Name \t Country");
 			while(rs.next()){
@@ -195,7 +194,6 @@ public class UpdateRecord extends Database{
 		String lname, sname;
 		ResultSet rs = getSet("select * from color order by id asc");
 		System.out.println(" -- Update color -- ");
-		int i = 1;
 		try{
 			System.out.println("ID \t Short name \t Long name");
 			while(rs.next()){
@@ -227,7 +225,6 @@ public class UpdateRecord extends Database{
 		String name, code;
 		ResultSet rs = getSet("select * from country order by id asc");
 		System.out.println(" -- Update country -- ");
-		int i = 1;
 		try{
 			System.out.println("ID \t Code \t\t Name");
 			while(rs.next()){
